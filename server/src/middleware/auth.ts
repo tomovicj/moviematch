@@ -3,6 +3,7 @@ import { auth } from '../lib/auth';
 import { UnauthorizedError } from '../lib/errors';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       user: {

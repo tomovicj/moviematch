@@ -1,5 +1,4 @@
 import { prisma } from '../lib/db';
-import { NotFoundError } from '../lib/errors';
 import { SwipeType } from '@prisma/client';
 
 export const swipesService = {
