@@ -5,6 +5,9 @@ import { auth } from './lib/auth';
 import { errorHandler } from './middleware/error-handler';
 import friendshipRoutes from './routes/friendship.routes';
 import blockRoutes from './routes/block.routes';
+import moviesRoutes from './routes/movies.routes';
+import swipesRoutes from './routes/swipes.routes';
+import partyRoutes from './routes/party.routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +24,9 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/friendships', friendshipRoutes);
 app.use('/api/blocks', blockRoutes);
+app.use('/api/movies', moviesRoutes);
+app.use('/api/swipes', swipesRoutes);
+app.use('/api/parties', partyRoutes);
 
 app.use(errorHandler);
 

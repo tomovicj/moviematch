@@ -10,7 +10,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String    @id @default(cuid())
   name          String
   email         String
   emailVerified Boolean   @default(false)
@@ -20,10 +20,14 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  friendshipsRequested Friendship[] @relation("FriendshipsRequested")
-  friendshipsReceived  Friendship[] @relation("FriendshipsReceived")
-  blocksMade           Block[]      @relation("BlocksMade")
-  blocksReceived       Block[]      @relation("BlocksReceived")
+  friendshipsRequested Friendship[]      @relation("FriendshipsRequested")
+  friendshipsReceived  Friendship[]      @relation("FriendshipsReceived")
+  blocksMade           Block[]           @relation("BlocksMade")
+  blocksReceived       Block[]           @relation("BlocksReceived")
+  swipes               Swipe[]           @relation("UserSwipes")
+  partiesHosted        Party[]           @relation("PartyHost")
+  partiesJoined        Party[]           @relation("PartyMembers")
+  partyInvitations     PartyInvitation[]
 
   @@unique([email])
   @@map("user")
@@ -109,4 +113,87 @@ model Block {
   @@unique([blockerId, blockedId])
   @@index([blockedId])
   @@map("block")
+}
+
+model Genre {
+  id     String  @id @default(cuid())
+  name   String
+  movies Movie[] @relation("MovieGenres")
+
+  @@unique([name])
+  @@map("genre")
+}
+
+model Movie {
+  id                String    @id @default(cuid())
+  title             String
+  overview          String
+  releaseDate       DateTime
+  adult             Boolean
+  posterPath        String
+  voteAverage       Float
+  voteCount         Int
+  isPopular         Boolean   @default(false)
+  lastSeenPopularAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  genres            Genre[]   @relation("MovieGenres")
+  swipes            Swipe[]   @relation("MovieSwipes")
+
+  @@index([title])
+  @@index([isPopular])
+  @@map("movie")
+}
+
+enum SwipeType {
+  LIKE
+  DISLIKE
+  WATCHED
+}
+
+model Swipe {
+  id        String    @id @default(cuid())
+  userId    String
+  movieId   String
+  type      SwipeType
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation("UserSwipes", fields: [userId], references: [id], onDelete: Cascade)
+  movie     Movie     @relation("MovieSwipes", fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+  @@map("swipe")
+}
+
+model Party {
+  id          String            @id @default(cuid())
+  name        String
+  hostId      String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  host        User              @relation("PartyHost", fields: [hostId], references: [id], onDelete: Cascade)
+  members     User[]            @relation("PartyMembers")
+  invitations PartyInvitation[]
+
+  @@map("party")
+}
+
+enum PartyInvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model PartyInvitation {
+  id        String                @id @default(cuid())
+  partyId   String
+  inviteeId String
+  status    PartyInvitationStatus @default(PENDING)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  party     Party                 @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  invitee   User                  @relation(fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  @@unique([partyId, inviteeId])
+  @@map("party_invitation")
 }
