@@ -4,6 +4,7 @@ import { toNodeHandler } from 'better-auth/node';
 import { auth } from './lib/auth';
 import { errorHandler } from './middleware/error-handler';
 import friendshipRoutes from './routes/friendship.routes';
+import userRoutes from './routes/users.routes';
 import blockRoutes from './routes/block.routes';
 import moviesRoutes from './routes/movies.routes';
 import swipesRoutes from './routes/swipes.routes';
@@ -23,6 +24,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/friendships', friendshipRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/blocks', blockRoutes);
 app.use('/api/movies', moviesRoutes);
 app.use('/api/swipes', swipesRoutes);

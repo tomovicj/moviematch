@@ -19,13 +19,6 @@ router.use(requireAuth);
 // GET /api/users/me - Show current user's profile
 router.get('/me', usersController.getCurrentUser);
 
-// GET /api/users/:userId - Show another user's profile
-router.get(
-  '/:userId',
-  validate(userIdParamSchema, 'params'),
-  usersController.getUserById,
-);
-
 // GET /api/users/search?q= - Search users by name
 router.get(
   '/search',
@@ -35,5 +28,12 @@ router.get(
 
 // DELETE /api/users/me - Delete user account
 router.delete('/me', usersController.deleteUser);
+
+// GET /api/users/:userId - Show another user's profile
+router.get(
+  '/:userId',
+  validate(userIdParamSchema, 'params'),
+  usersController.getUserById,
+);
 
 export default router;
