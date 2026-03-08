@@ -13,6 +13,7 @@ const envSchema = z
       .default('http://localhost:3000'),
     BETTER_AUTH_SECRET: z.string().min(1, 'BETTER_AUTH_SECRET is required'),
     CORS_ORIGIN: z.string().optional(),
+    TMDB_API_KEY: z.string().min(1, 'TMDB_API_KEY is required'),
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
   })

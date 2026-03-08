@@ -4,6 +4,7 @@ import { toNodeHandler } from 'better-auth/node';
 import { auth } from './lib/auth';
 import { env } from './lib/env';
 import { errorHandler } from './middleware/error-handler';
+import { startPopularMoviesJob } from './jobs/sync-popular-movies.job';
 import friendshipRoutes from './routes/friendship.routes';
 import userRoutes from './routes/users.routes';
 import blockRoutes from './routes/block.routes';
@@ -44,4 +45,7 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Server is running at http://localhost:${PORT}`);
+
+  // Start scheduled jobs
+  startPopularMoviesJob();
 });

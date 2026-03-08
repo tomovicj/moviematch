@@ -117,6 +117,7 @@ model Block {
 
 model Genre {
   id     String  @id @default(cuid())
+  tmdbId Int     @unique
   name   String
   movies Movie[] @relation("MovieGenres")
 
@@ -126,6 +127,7 @@ model Genre {
 
 model Movie {
   id                String    @id @default(cuid())
+  tmdbId            Int       @unique
   title             String
   overview          String
   releaseDate       DateTime
