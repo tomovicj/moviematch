@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { AppError } from '../lib/errors';
 
 export function errorHandler(
@@ -16,6 +17,41 @@ export function errorHandler(
       },
     });
     return;
+  }
+
+  if (err instanceof PrismaClientKnownRequestError) {
+    if (err.code === 'P2002') {
+      const target = Array.isArray(err.meta?.['target'])
+        ? (err.meta?.['target'] as string[]).join(', ')
+        : 'resource';
+      res.status(409).json({
+        error: {
+          message: `Unique constraint failed: ${target}`,
+          status: 409,
+        },
+      });
+      return;
+    }
+
+    if (err.code === 'P2003') {
+      res.status(400).json({
+        error: {
+          message: 'Invalid relation reference',
+          status: 400,
+        },
+      });
+      return;
+    }
+
+    if (err.code === 'P2025') {
+      res.status(404).json({
+        error: {
+          message: 'Resource not found',
+          status: 404,
+        },
+      });
+      return;
+    }
   }
 
   // eslint-disable-next-line no-console

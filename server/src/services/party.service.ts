@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { prisma } from '../lib/db';
-import { ConflictError, NotFoundError, UnauthorizedError } from '../lib/errors';
+import { ConflictError, ForbiddenError, NotFoundError } from '../lib/errors';
 import { PartyInvitationStatus } from '@prisma/client';
 
 export const partyService = {
@@ -57,7 +57,7 @@ export const partyService = {
     }
 
     if (party.hostId !== hostUserId) {
-      throw new UnauthorizedError('Only the host can delete the party');
+      throw new ForbiddenError('Only the host can delete the party');
     }
 
     await prisma.party.delete({
@@ -94,9 +94,7 @@ export const partyService = {
     }
 
     if (party.hostId !== hostUserId) {
-      throw new UnauthorizedError(
-        'Only the host can invite users to the party',
-      );
+      throw new ForbiddenError('Only the host can invite users to the party');
     }
 
     try {
@@ -133,7 +131,7 @@ export const partyService = {
     }
 
     if (invitation.inviteeId !== userId) {
-      throw new UnauthorizedError(
+      throw new ForbiddenError(
         'Only the invitee can respond to the party invitation',
       );
     }
@@ -172,9 +170,7 @@ export const partyService = {
     }
 
     if (party.hostId !== hostUserId) {
-      throw new UnauthorizedError(
-        'Only the host can kick users from the party',
-      );
+      throw new ForbiddenError('Only the host can kick users from the party');
     }
 
     await prisma.partyInvitation.deleteMany({
@@ -235,7 +231,7 @@ export const partyService = {
     }
 
     if (party.hostId === userId) {
-      throw new UnauthorizedError('Host cannot leave the party');
+      throw new ForbiddenError('Host cannot leave the party');
     }
 
     await prisma.partyInvitation.deleteMany({

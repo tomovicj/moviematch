@@ -7,7 +7,7 @@ import { SwipeType } from '@prisma/client';
 
 const router = Router();
 
-const swipeIdQuerySchema = z.object({
+const swipeIdParamSchema = z.object({
   swipeId: z.string().min(1),
 });
 
@@ -40,7 +40,7 @@ router.post(
 // DELETE /api/swipes/:swipeId - Delete a swipe
 router.delete(
   '/:swipeId',
-  validate(swipeIdQuerySchema),
+  validate(swipeIdParamSchema, 'params'),
   swipesController.deleteSwipe,
 );
 

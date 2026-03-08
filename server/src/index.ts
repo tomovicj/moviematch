@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { toNodeHandler } from 'better-auth/node';
 import { auth } from './lib/auth';
+import { env } from './lib/env';
 import { errorHandler } from './middleware/error-handler';
 import friendshipRoutes from './routes/friendship.routes';
 import userRoutes from './routes/users.routes';
@@ -11,9 +12,17 @@ import swipesRoutes from './routes/swipes.routes';
 import partyRoutes from './routes/party.routes';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const allowedOrigins = env.CORS_ORIGIN?.split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const PORT = env.PORT;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: allowedOrigins && allowedOrigins.length > 0 ? allowedOrigins : true,
+    credentials: true,
+  }),
+);
 
 app.all('/api/auth/{*any}', toNodeHandler(auth));
 
