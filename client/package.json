@@ -15,6 +15,7 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "better-auth": "^1.4.19",
     "pinia": "^3.0.4",
     "vant": "^4.9.22",
     "vue": "^3.5.29",
