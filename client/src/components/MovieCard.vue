@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FeedMovie } from '@/types'
-import { formatDate } from '@/utils/date.util'
 
 defineProps<{
   movie: FeedMovie
@@ -8,17 +7,29 @@ defineProps<{
 </script>
 
 <template>
-  <div
-    class="border border-gray-300 rounded-lg overflow-hidden w-3/4 md:w-1/2 lg:w-1/3 mx-auto mt-4"
-  >
-    <img
-      :src="`https://image.tmdb.org/t/p/w342${movie.posterPath}`"
-      :alt="`${movie.title} poster`"
-    />
-    <div class="p-4">
-      <h2 class="text-xl font-semibold mb-2">{{ movie.title }}</h2>
-      <p class="text-sm text-gray-600 mb-1">Release Date: {{ formatDate(movie.releaseDate) }}</p>
-      <p class="mb-1">
+  <div class="h-full flex flex-col rounded-lg overflow-hidden border border-gray-300">
+    <!-- Poster area — fills available vertical space -->
+    <div
+      v-if="movie.posterPath"
+      class="flex-1 min-h-0 bg-center bg-cover bg-no-repeat"
+      :style="{ backgroundImage: `url(https://image.tmdb.org/t/p/w780${movie.posterPath})` }"
+      role="img"
+      :aria-label="`${movie.title} poster`"
+    ></div>
+    <div
+      v-else
+      class="flex-1 min-h-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm"
+    >
+      No poster available
+    </div>
+
+    <!-- Info panel — compact, never grows -->
+    <div class="shrink-0 p-3">
+      <h2 class="text-base font-semibold leading-tight mb-1 line-clamp-2">
+        {{ movie.title }} ({{ new Date(movie.releaseDate).getFullYear() }})
+      </h2>
+
+      <div class="flex items-center gap-2 mb-1">
         <van-rate
           :model-value="movie.voteAverage / 2"
           allow-half
@@ -26,19 +37,24 @@ defineProps<{
           size="12"
           void-icon="star"
         />
-        <span class="ml-2 text-sm text-gray-600"
-          >{{ (movie.voteAverage / 2).toFixed(1) }} / 5 ({{ movie.voteCount }} votes)</span
-        >
-      </p>
-      <p class="flex gap-1 mb-1 flex-wrap">
+        <span class="text-xs text-gray-600">
+          {{ (movie.voteAverage / 2).toFixed(1) }} / 5 ({{ movie.voteCount }})
+        </span>
+      </div>
+
+      <!-- <p class="text-xs text-gray-600 mb-1">{{ formatDate(movie.releaseDate) }}</p> -->
+
+      <div class="flex gap-1 mb-1 flex-wrap">
         <span
-          class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-800 inline-flex items-center text-nowrap"
+          class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-gray-200 text-gray-800 text-nowrap"
           v-for="genre in movie.genres"
           :key="genre.name"
-          >{{ genre.name }}</span
         >
-      </p>
-      <p class="text-gray-700 text-xs mt-2 max-h-24 overflow-y-auto">
+          {{ genre.name }}
+        </span>
+      </div>
+
+      <p class="text-gray-700 text-xs leading-snug max-h-16 overflow-y-auto">
         {{ movie.overview }}
       </p>
     </div>

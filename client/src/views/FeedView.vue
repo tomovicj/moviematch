@@ -20,32 +20,43 @@ onMounted(async () => {
 </script>
 
 <template>
-  <van-loading v-if="loading" type="spinner" size="24px" vertical>Loading feed...</van-loading>
+  <!-- Loading state — centered in available space -->
+  <div v-if="loading" class="h-full flex items-center justify-center">
+    <van-loading type="spinner" size="24px" vertical>Loading feed...</van-loading>
+  </div>
 
-  <van-empty v-else-if="error" description="Something went wrong">
-    <template #description>
-      <p>{{ error }}</p>
-    </template>
-  </van-empty>
+  <!-- Error state — centered -->
+  <div v-else-if="error" class="h-full flex items-center justify-center">
+    <van-empty description="Something went wrong">
+      <template #description>
+        <p>{{ error }}</p>
+      </template>
+    </van-empty>
+  </div>
 
-  <van-empty v-else-if="movies.length === 0" description="No movies in your feed yet" />
+  <!-- Empty state — centered -->
+  <div v-else-if="movies.length === 0" class="h-full flex items-center justify-center">
+    <van-empty description="No movies in your feed yet" />
+  </div>
 
-  <template v-else>
-    <div class="flex flex-col h-full">
-      <div class="flex-1 min-h-0">
-        <MovieCard :movie="movies[0]!" />
-      </div>
-      <div class="flex justify-evenly my-4">
-        <button>
-          <van-icon name="close" size="60" class="text-red-500" />
-        </button>
-        <button>
-          <van-icon name="add-o" size="60" class="text-blue-500" />
-        </button>
-        <button>
-          <van-icon name="passed" size="60" class="text-green-500" />
-        </button>
-      </div>
+  <!-- Feed card + action buttons -->
+  <div v-else class="flex flex-col h-full px-3 pt-2 pb-1">
+    <!-- Card area — fills remaining height -->
+    <div class="flex-1 min-h-0">
+      <MovieCard :movie="movies[0]!" />
     </div>
-  </template>
+
+    <!-- Action buttons — pinned at bottom, never pushed off-screen -->
+    <div class="shrink-0 flex justify-evenly py-2">
+      <button class="active:scale-90 transition-transform">
+        <van-icon name="close" size="48" class="text-red-500" />
+      </button>
+      <button class="active:scale-90 transition-transform">
+        <van-icon name="add-o" size="48" class="text-blue-500" />
+      </button>
+      <button class="active:scale-90 transition-transform">
+        <van-icon name="passed" size="48" class="text-green-500" />
+      </button>
+    </div>
+  </div>
 </template>
