@@ -31,6 +31,21 @@ onMounted(async () => {
   <van-empty v-else-if="movies.length === 0" description="No movies in your feed yet" />
 
   <template v-else>
-    <MovieCard v-for="movie in movies" :key="movie.id" :movie="movie" />
+    <div class="flex flex-col h-full">
+      <div class="flex-1 min-h-0">
+        <MovieCard :movie="movies[0]!" />
+      </div>
+      <div class="flex justify-evenly my-4">
+        <button>
+          <van-icon name="close" size="60" class="text-red-500" />
+        </button>
+        <button>
+          <van-icon name="add-o" size="60" class="text-blue-500" />
+        </button>
+        <button>
+          <van-icon name="passed" size="60" class="text-green-500" />
+        </button>
+      </div>
+    </div>
   </template>
 </template>

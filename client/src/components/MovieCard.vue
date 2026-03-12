@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FeedMovie } from '@/types'
+import { formatDate } from '@/utils/date.util'
 
 defineProps<{
   movie: FeedMovie
@@ -7,61 +8,39 @@ defineProps<{
 </script>
 
 <template>
-  <van-cell-group inset style="margin-bottom: 12px">
-    <van-cell center>
-      <template #icon>
-        <van-image
-          v-if="movie.posterPath"
-          :src="`https://image.tmdb.org/t/p/w154${movie.posterPath}`"
-          width="80"
-          height="120"
-          radius="4"
-          fit="cover"
-          style="margin-right: 12px"
+  <div
+    class="border border-gray-300 rounded-lg overflow-hidden w-3/4 md:w-1/2 lg:w-1/3 mx-auto mt-4"
+  >
+    <img
+      :src="`https://image.tmdb.org/t/p/w342${movie.posterPath}`"
+      :alt="`${movie.title} poster`"
+    />
+    <div class="p-4">
+      <h2 class="text-xl font-semibold mb-2">{{ movie.title }}</h2>
+      <p class="text-sm text-gray-600 mb-1">Release Date: {{ formatDate(movie.releaseDate) }}</p>
+      <p class="mb-1">
+        <van-rate
+          :model-value="movie.voteAverage / 2"
+          allow-half
+          readonly
+          size="12"
+          void-icon="star"
         />
-      </template>
-      <template #title>
-        <span style="font-weight: 600">{{ movie.title }}</span>
-      </template>
-      <template #label>
-        <div style="margin-top: 4px">
-          <van-rate
-            :model-value="movie.voteAverage / 2"
-            allow-half
-            readonly
-            size="12"
-            void-icon="star"
-          />
-          <span style="font-size: 12px; margin-left: 4px; color: #999">
-            {{ (movie.voteAverage / 2).toFixed(1) }}
-          </span>
-        </div>
-        <div v-if="movie.genres.length" style="margin-top: 4px">
-          <van-tag
-            v-for="genre in movie.genres"
-            :key="genre.name"
-            plain
-            type="primary"
-            size="medium"
-            style="margin-right: 4px; margin-bottom: 4px"
-          >
-            {{ genre.name }}
-          </van-tag>
-        </div>
-        <p
-          style="
-            margin-top: 4px;
-            font-size: 12px;
-            color: #666;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          "
+        <span class="ml-2 text-sm text-gray-600"
+          >{{ (movie.voteAverage / 2).toFixed(1) }} / 5 ({{ movie.voteCount }} votes)</span
         >
-          {{ movie.overview }}
-        </p>
-      </template>
-    </van-cell>
-  </van-cell-group>
+      </p>
+      <p class="flex gap-1 mb-1 flex-wrap">
+        <span
+          class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-800 inline-flex items-center text-nowrap"
+          v-for="genre in movie.genres"
+          :key="genre.name"
+          >{{ genre.name }}</span
+        >
+      </p>
+      <p class="text-gray-700 text-xs mt-2 max-h-24 overflow-y-auto">
+        {{ movie.overview }}
+      </p>
+    </div>
+  </div>
 </template>

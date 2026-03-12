@@ -14,7 +14,10 @@ const active = computed({
 </script>
 
 <template>
-  <RouterView />
+  <!-- navbar is 50px -->
+  <main class="h-[calc(100vh-50px)]">
+    <RouterView />
+  </main>
   <van-tabbar v-model="active">
     <van-tabbar-item name="profile" icon="contact-o">Profile</van-tabbar-item>
     <van-tabbar-item name="friends" icon="friends-o">Friends</van-tabbar-item>
