@@ -17,6 +17,18 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/ProfileView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/profile/movies',
+      name: 'profile-movies',
+      component: () => import('@/views/SwipedMoviesList.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/feed',
       name: 'feed',
       component: () => import('@/views/FeedView.vue'),

@@ -6,7 +6,10 @@ const router = useRouter()
 const route = useRoute()
 
 const active = computed({
-  get: () => (route.name as string) || '',
+  get: () => {
+    // Extract the base route name (e.g., 'profile' from 'profile-movies')
+    return route.name?.toString().split('-')[0] || ''
+  },
   set: (val: string) => {
     router.push({ name: val })
   },

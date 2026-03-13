@@ -12,8 +12,12 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     MovieCard: typeof import('./src/components/MovieCard.vue')['default']
+    MovieListItem: typeof import('./src/components/MovieListItem.vue')['default']
+    MoviesList: typeof import('./src/components/MoviesList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SwipedMoviesCard: typeof import('./src/components/SwipedMoviesCard.vue')['default']
+    UserDetails: typeof import('./src/components/UserDetails.vue')['default']
     VanButton: typeof import('vant/es')['Button']
     VanEmpty: typeof import('vant/es')['Empty']
     VanIcon: typeof import('vant/es')['Icon']
