@@ -7,5 +7,6 @@ import MainLayout from '@/layouts/MainLayout.vue'
 </template>
 
 <style>
+@import 'vant/lib/index.css';
 @import 'tailwindcss';
 </style>
