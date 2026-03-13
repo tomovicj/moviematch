@@ -45,7 +45,7 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.requiresGuest && isAuthenticated) {
-    return { name: 'home' }
+    return { name: 'feed' }
   }
 })
 

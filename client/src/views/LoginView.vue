@@ -9,7 +9,13 @@ const { signInWithGoogle } = useAuth()
     <div class="login-card">
       <h1 class="login-title">MovieMatch</h1>
       <p class="login-subtitle">Find movies you'll both love</p>
-      <van-button type="default" size="large" block class="google-btn" @click="signInWithGoogle()">
+      <van-button
+        type="default"
+        size="large"
+        block
+        class="google-btn"
+        @click="signInWithGoogle('/feed')"
+      >
         <template #icon>
           <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path
