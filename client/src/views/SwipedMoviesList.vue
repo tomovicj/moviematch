@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ViewHeaderBar from '@/components/ViewHeaderBar.vue'
 import { swipeService } from '@/services/swipe.service'
 import type { SwipeMovie, SwipeType } from '@/types'
 import { ref, watch } from 'vue'
@@ -29,12 +30,10 @@ watch(
 </script>
 
 <template>
-  <div class="flex gap-4 items-center py-4 px-2 shadow">
-    <button @click="$router.back()">
-      <van-icon name="arrow-left" size="24px" />
-    </button>
-    <h1 class="text-2xl font-bold capitalize pt-1">{{ listType.toLocaleLowerCase() }} movies</h1>
-  </div>
+  <ViewHeaderBar
+    :label="listType === 'ALL' ? 'All Swiped Movies' : listType.toLowerCase() + ' Movies'"
+    :showBackButton="true"
+  />
   <div>
     <MovieListItem v-for="movie in movies" :key="movie.id" :movie="movie" />
   </div>
