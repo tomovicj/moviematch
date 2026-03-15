@@ -30,7 +30,14 @@ onMounted(async () => {
       You have no friends yet.
     </div>
     <div>
-      <FriendListItem v-for="friend in friends" :key="friend.id" :friend="friend" />
+      <FriendListItem v-for="friend in friends" :key="friend.id" :friend="friend">
+        <template #actions>
+          <FriendActions
+            :user="friend"
+            @unfriended="(userId: string) => (friends = friends.filter((f) => f.id !== userId))"
+          />
+        </template>
+      </FriendListItem>
     </div>
   </div>
 </template>

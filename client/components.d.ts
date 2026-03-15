@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    FriendActions: typeof import('./src/components/FriendActions.vue')['default']
     FriendListItem: typeof import('./src/components/FriendListItem.vue')['default']
     MovieCard: typeof import('./src/components/MovieCard.vue')['default']
     MovieListItem: typeof import('./src/components/MovieListItem.vue')['default']

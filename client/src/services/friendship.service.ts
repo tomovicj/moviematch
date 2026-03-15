@@ -34,4 +34,8 @@ export const friendshipService = {
   async cancelRequest(requestId: string): Promise<void> {
     await apiClient.delete(`/api/friendships/requests/sent/${requestId}`)
   },
+
+  async unfriendUser(userId: string): Promise<void> {
+    await apiClient.delete(`/api/friendships/${userId}`)
+  },
 }
