@@ -61,6 +61,13 @@ router.post(
   friendshipController.rejectRequest,
 );
 
+// DELETE /api/friendships/requests/sent/:id - cancel a sent pending request
+router.delete(
+  '/requests/sent/:id',
+  validate(idParamSchema, 'params'),
+  friendshipController.cancelRequest,
+);
+
 // DELETE /api/friendships/:friendId - remove a friend
 router.delete(
   '/:friendId',

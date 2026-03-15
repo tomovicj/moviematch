@@ -125,6 +125,24 @@ export const friendshipService = {
     });
   },
 
+  async cancelRequest(friendshipId: string, userId: string) {
+    const friendship = await prisma.friendship.findUnique({
+      where: { id: friendshipId },
+    });
+
+    if (!friendship) {
+      throw new NotFoundError('Friend request not found');
+    }
+    if (friendship.requesterId !== userId) {
+      throw new ForbiddenError('Only the requester can cancel a sent request');
+    }
+    if (friendship.status !== FriendshipStatus.PENDING) {
+      throw new BadRequestError('This friend request is no longer pending');
+    }
+
+    await prisma.friendship.delete({ where: { id: friendshipId } });
+  },
+
   async removeFriend(userId: string, friendId: string) {
     const friendship = await prisma.friendship.findFirst({
       where: {

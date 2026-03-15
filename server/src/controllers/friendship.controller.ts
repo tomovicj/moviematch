@@ -38,6 +38,18 @@ export const friendshipController = {
     }
   },
 
+  async cancelRequest(req: Request, res: Response, next: NextFunction) {
+    try {
+      await friendshipService.cancelRequest(
+        req.params['id'] as string,
+        req.user.id,
+      );
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  },
+
   async removeFriend(req: Request, res: Response, next: NextFunction) {
     try {
       await friendshipService.removeFriend(
