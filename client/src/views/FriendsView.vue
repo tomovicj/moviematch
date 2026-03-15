@@ -23,13 +23,18 @@ onMounted(async () => {
 <template>
   <div>
     <ViewHeaderBar label="Friends" />
-    <router-link to="/friends/requests" class="text-blue-500 hover:underline mb-4 inline-block">
-      View Friend Requests
-    </router-link>
+    <div class="p-4">
+      <router-link to="/friends/requests">
+        <button class="h-10 w-full bg-blue-500 !text-white rounded hover:bg-blue-600">
+          View Friend Requests
+        </button>
+      </router-link>
+    </div>
+    <SearchBar />
     <div v-if="friends.length === 0" class="p-4 text-center text-gray-500">
       You have no friends yet.
     </div>
-    <div>
+    <div class="mt-4">
       <FriendListItem v-for="friend in friends" :key="friend.id" :friend="friend">
         <template #actions>
           <FriendActions

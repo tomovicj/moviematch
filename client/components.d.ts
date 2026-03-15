@@ -18,6 +18,7 @@ declare module 'vue' {
     ReceivedFriendRequestActions: typeof import('./src/components/ReceivedFriendRequestActions.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchBar: typeof import('./src/components/SearchBar.vue')['default']
     SentFriendRequestActions: typeof import('./src/components/SentFriendRequestActions.vue')['default']
     SwipedMoviesCard: typeof import('./src/components/SwipedMoviesCard.vue')['default']
     TabToggle: typeof import('./src/components/TabToggle.vue')['default']
