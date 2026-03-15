@@ -11,12 +11,16 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    FriendListItem: typeof import('./src/components/FriendListItem.vue')['default']
     MovieCard: typeof import('./src/components/MovieCard.vue')['default']
     MovieListItem: typeof import('./src/components/MovieListItem.vue')['default']
-    MoviesList: typeof import('./src/components/MoviesList.vue')['default']
+    ReceivedFriendRequestActions: typeof import('./src/components/ReceivedFriendRequestActions.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SentFriendRequestActions: typeof import('./src/components/SentFriendRequestActions.vue')['default']
     SwipedMoviesCard: typeof import('./src/components/SwipedMoviesCard.vue')['default']
+    TabToggle: typeof import('./src/components/TabToggle.vue')['default']
+    TabToogle: typeof import('./src/components/TabToogle.vue')['default']
     UserDetails: typeof import('./src/components/UserDetails.vue')['default']
     VanButton: typeof import('vant/es')['Button']
     VanEmpty: typeof import('vant/es')['Empty']
@@ -26,5 +30,6 @@ declare module 'vue' {
     VanRate: typeof import('vant/es')['Rate']
     VanTabbar: typeof import('vant/es')['Tabbar']
     VanTabbarItem: typeof import('vant/es')['TabbarItem']
+    ViewHeaderBar: typeof import('./src/components/ViewHeaderBar.vue')['default']
   }
 }
