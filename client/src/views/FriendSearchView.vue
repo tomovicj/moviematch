@@ -50,12 +50,10 @@ const handleSentFriendRequest = (userId: string) => {
     :initialQuery="(route.query.q as string) || ''"
     @searchQuery="onSearchQuery"
   />
-  <div v-if="isLoading" class="text-center mt-8">
+  <div v-if="isLoading" class="text-center mt-5">
     <van-loading size="24px">Loading...</van-loading>
   </div>
-  <div v-else-if="people.length === 0" class="text-center text-gray-500 mt-8">
-    <p>No users found.</p>
-  </div>
+  <div v-else-if="people.length === 0" class="text-center text-gray-500 mt-5">No users found</div>
   <div v-else>
     <FriendListItem v-for="person in people" :key="person.id" :friend="person">
       <template #actions>

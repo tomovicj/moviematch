@@ -37,7 +37,7 @@ onMounted(async () => {
       </router-link>
     </div>
     <SearchBar @searchQuery="onSearchQuery" />
-    <div v-if="friends.length === 0" class="p-4 text-center text-gray-500">
+    <div v-if="friends.length === 0" class="text-center text-gray-500 mt-5">
       You have no friends yet.
     </div>
     <div class="mt-4">

@@ -53,6 +53,9 @@ onMounted(() => {
     </div>
     <!-- Received Requests Tab -->
     <div v-if="currentTab === 'received'">
+      <div v-if="receivedRequests.length === 0" class="text-center text-gray-500 mt-5">
+        No pending friend requests.
+      </div>
       <FriendListItem
         v-for="request in receivedRequests"
         :key="request.requester.id"
@@ -66,6 +69,9 @@ onMounted(() => {
     </div>
     <!-- Sent Requests Tab -->
     <div v-if="currentTab === 'sent'">
+      <div v-if="sentRequests.length === 0" class="text-center text-gray-500 mt-5">
+        No sent friend requests.
+      </div>
       <FriendListItem
         v-for="request in sentRequests"
         :key="request.addressee.id"
