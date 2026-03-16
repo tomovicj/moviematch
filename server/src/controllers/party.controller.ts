@@ -70,4 +70,10 @@ export const partyController = {
     await partyService.leaveParty(partyId, userId);
     res.status(200).json({ message: 'Left the party successfully' });
   },
+
+  getPartyMembers: async (req: Request, res: Response) => {
+    const partyId = req.params.id as string;
+    const members = await partyService.getPartyMembers(partyId);
+    res.json(members);
+  },
 };

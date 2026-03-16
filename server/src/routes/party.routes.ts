@@ -57,6 +57,13 @@ router.delete(
   partyController.deleteParty,
 );
 
+// GET /api/parties/:id/members - Get members of a party
+router.get(
+  '/:id/members',
+  validate(idParamSchema, 'params'),
+  partyController.getPartyMembers,
+);
+
 // POST /api/parties/:id/invite - Invite a user to the party (only host can invite)
 router.post(
   '/:id/invite',
