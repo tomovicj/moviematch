@@ -173,6 +173,10 @@ export const partyService = {
       throw new ForbiddenError('Only the host can kick users from the party');
     }
 
+    if (userId === hostUserId) {
+      throw new ForbiddenError('Host cannot kick themselves from the party');
+    }
+
     await prisma.partyInvitation.deleteMany({
       where: {
         partyId,
