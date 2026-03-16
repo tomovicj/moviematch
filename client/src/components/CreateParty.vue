@@ -7,15 +7,20 @@ const router = useRouter()
 
 const isModalOpen = ref(false)
 const partyName = ref('')
+const errorMessage = ref('')
 
 const openModal = () => {
   partyName.value = ''
+  errorMessage.value = ''
   isModalOpen.value = true
 }
 
 const handleCreateParty = () => {
   const name = partyName.value.trim()
-  if (!name) return // TODO: Show error message
+  if (!name) {
+    errorMessage.value = 'Party name cannot be empty.'
+    return
+  }
 
   partiesService
     .createParty(name)
@@ -44,10 +49,17 @@ const handleCreateParty = () => {
         <label for="party-name">Party Name</label>
         <input
           v-model="partyName"
+          @input="errorMessage = ''"
           id="party-name"
           type="text"
-          class="border border-gray-300 rounded py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          :class="[
+            'border rounded py-2 px-4 w-full focus:outline-none focus:ring-2',
+            errorMessage
+              ? 'border-red-500 focus:ring-red-500'
+              : 'border-gray-300 focus:ring-blue-500',
+          ]"
         />
+        <p v-if="errorMessage" class="text-red-500 text-sm mt-1">{{ errorMessage }}</p>
         <button
           type="submit"
           class="w-full bg-blue-500 !text-white py-2 px-4 rounded hover:bg-blue-600 mt-4"
