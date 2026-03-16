@@ -35,6 +35,7 @@ const handleSendFriendRequest = () => {
     @click="handleSendFriendRequest"
     :disabled="isPending"
   >
-    <van-icon name="plus" />
+    <van-loading v-if="isPending" size="16px" />
+    <van-icon v-else name="plus" />
   </button>
 </template>

@@ -6,6 +6,8 @@ import { onMounted, ref } from 'vue'
 const currentTab = ref<'received' | 'sent'>('received')
 const receivedRequests = ref<PendingRequest[]>([])
 const sentRequests = ref<SentRequest[]>([])
+const isLoadingReceived = ref(false)
+const isLoadingSent = ref(false)
 
 const handleResolved = (tab: 'received' | 'sent', requestId: string) => {
   if (tab === 'received') {
@@ -19,6 +21,7 @@ const handleResolved = (tab: 'received' | 'sent', requestId: string) => {
 }
 
 onMounted(() => {
+  isLoadingReceived.value = true
   friendshipService
     .getReceivedFriendRequests()
     .then((requests) => {
@@ -27,7 +30,11 @@ onMounted(() => {
     .catch((error) => {
       console.error('Failed to fetch pending requests:', error)
     })
+    .finally(() => {
+      isLoadingReceived.value = false
+    })
 
+  isLoadingSent.value = true
   friendshipService
     .getSentFriendRequests()
     .then((requests) => {
@@ -35,6 +42,9 @@ onMounted(() => {
     })
     .catch((error) => {
       console.error('Failed to fetch sent requests:', error)
+    })
+    .finally(() => {
+      isLoadingSent.value = false
     })
 })
 </script>
@@ -53,10 +63,14 @@ onMounted(() => {
     </div>
     <!-- Received Requests Tab -->
     <div v-if="currentTab === 'received'">
-      <div v-if="receivedRequests.length === 0" class="text-center text-gray-500 mt-5">
-        No pending friend requests.
+      <div v-if="isLoadingReceived" class="h-full flex items-center justify-center mt-5">
+        <van-loading type="spinner" size="24px" vertical>Loading...</van-loading>
+      </div>
+      <div v-else-if="receivedRequests.length === 0" class="text-center text-gray-500 mt-5">
+        No pending friend requests
       </div>
       <FriendListItem
+        v-else
         v-for="request in receivedRequests"
         :key="request.requester.id"
         :friend="request.requester"
@@ -69,10 +83,14 @@ onMounted(() => {
     </div>
     <!-- Sent Requests Tab -->
     <div v-if="currentTab === 'sent'">
-      <div v-if="sentRequests.length === 0" class="text-center text-gray-500 mt-5">
-        No sent friend requests.
+      <div v-if="isLoadingSent" class="h-full flex items-center justify-center mt-5">
+        <van-loading type="spinner" size="24px" vertical>Loading...</van-loading>
+      </div>
+      <div v-else-if="sentRequests.length === 0" class="text-center text-gray-500 mt-5">
+        No sent friend requests
       </div>
       <FriendListItem
+        v-else
         v-for="request in sentRequests"
         :key="request.addressee.id"
         :friend="request.addressee"

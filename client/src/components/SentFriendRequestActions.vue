@@ -34,6 +34,7 @@ const handleCancel = () => {
     @click="handleCancel"
     :disabled="isPending"
   >
-    <van-icon name="cross" />
+    <van-loading v-if="isPending" size="16px" />
+    <van-icon v-else name="cross" />
   </button>
 </template>

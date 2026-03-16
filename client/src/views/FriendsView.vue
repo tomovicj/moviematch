@@ -5,24 +5,30 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const friends = ref<UserStub[]>([])
+const isLoading = ref(false)
 const router = useRouter()
 
 const onSearchQuery = (query: string) => {
   router.push(`/friends/search?q=${query}`)
 }
 
-onMounted(async () => {
-  try {
-    const friendships = await friendshipService.getFriends()
-    const friendStubs: UserStub[] = friendships.map((friendship: FriendItem) => ({
-      id: friendship.friend.id,
-      name: friendship.friend.name,
-      image: friendship.friend.image,
-    }))
-    friends.value = friendStubs
-  } catch (error) {
-    console.error('Failed to fetch friends:', error)
-  }
+onMounted(() => {
+  isLoading.value = true
+  friendshipService
+    .getFriends()
+    .then((friendships) => {
+      friends.value = friendships.map((friendship: FriendItem) => ({
+        id: friendship.friend.id,
+        name: friendship.friend.name,
+        image: friendship.friend.image,
+      }))
+    })
+    .catch((error) => {
+      console.error('Failed to fetch friends:', error)
+    })
+    .finally(() => {
+      isLoading.value = false
+    })
 })
 </script>
 
@@ -37,8 +43,11 @@ onMounted(async () => {
       </router-link>
     </div>
     <SearchBar @searchQuery="onSearchQuery" />
-    <div v-if="friends.length === 0" class="text-center text-gray-500 mt-5">
-      You have no friends yet.
+    <div v-if="isLoading" class="h-full flex items-center justify-center mt-5">
+      <van-loading type="spinner" size="24px" vertical>Loading...</van-loading>
+    </div>
+    <div v-else-if="friends.length === 0" class="text-center text-gray-500 mt-5">
+      You have no friends yet
     </div>
     <div class="mt-4">
       <FriendListItem v-for="friend in friends" :key="friend.id" :friend="friend">

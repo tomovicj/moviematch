@@ -50,14 +50,16 @@ const handleDecline = () => {
       @click="handleAccept"
       :disabled="isPending"
     >
-      <van-icon name="success" />
+      <van-loading v-if="isPending" size="16px" />
+      <van-icon v-else name="success" />
     </button>
     <button
       class="bg-red-700 !text-white w-8 h-8 rounded-md"
       @click="handleDecline"
       :disabled="isPending"
     >
-      <van-icon name="cross" />
+      <van-loading v-if="isPending" size="16px" />
+      <van-icon v-else name="cross" />
     </button>
   </div>
 </template>
