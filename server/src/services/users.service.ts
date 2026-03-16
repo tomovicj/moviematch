@@ -1,4 +1,5 @@
 import { prisma } from '../lib/db';
+import { FriendshipStatus } from '@prisma/client';
 import { NotFoundError } from '../lib/errors';
 
 export const usersService = {
@@ -32,6 +33,38 @@ export const usersService = {
         email: true,
         image: true,
       },
+      orderBy: { name: 'asc' },
+      take: 20,
+    });
+  },
+
+  async searchUsersForFriendRequest(query: string, currentUserId: string) {
+    return prisma.user.findMany({
+      where: {
+        name: { contains: query, mode: 'insensitive' },
+        id: { not: currentUserId },
+        // Not blocked in either direction
+        blocksReceived: { none: { blockerId: currentUserId } },
+        blocksMade: { none: { blockedId: currentUserId } },
+        // No ACCEPTED or PENDING friendship in either direction
+        friendshipsReceived: {
+          none: {
+            requesterId: currentUserId,
+            status: {
+              in: [FriendshipStatus.ACCEPTED, FriendshipStatus.PENDING],
+            },
+          },
+        },
+        friendshipsRequested: {
+          none: {
+            addresseeId: currentUserId,
+            status: {
+              in: [FriendshipStatus.ACCEPTED, FriendshipStatus.PENDING],
+            },
+          },
+        },
+      },
+      select: { id: true, name: true, image: true },
       orderBy: { name: 'asc' },
       take: 20,
     });

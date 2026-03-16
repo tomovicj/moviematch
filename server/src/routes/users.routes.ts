@@ -26,6 +26,14 @@ router.get(
   usersController.searchUsers,
 );
 
+// GET /api/users/search/friends?q= - Search users eligible for a friend request
+// (excludes blocked users and users with an existing ACCEPTED or PENDING friendship)
+router.get(
+  '/search/friends',
+  validate(searchQuerySchema, 'query'),
+  usersController.searchUsersForFriendRequest,
+);
+
 // DELETE /api/users/me - Delete user account
 router.delete('/me', usersController.deleteUser);
 

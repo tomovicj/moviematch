@@ -35,6 +35,23 @@ export const usersController = {
     }
   },
 
+  async searchUsersForFriendRequest(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const query = req.query.q as string;
+      const users = await usersService.searchUsersForFriendRequest(
+        query,
+        req.user.id,
+      );
+      res.json(users);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
       await usersService.deleteUser(req.user.id);
