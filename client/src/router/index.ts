@@ -41,6 +41,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/friends/search',
+      name: 'friends-search',
+      component: () => import('@/views/FriendSearchView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/feed',
       name: 'feed',
       component: () => import('@/views/FeedView.vue'),

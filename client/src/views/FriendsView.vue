@@ -2,8 +2,14 @@
 import { friendshipService } from '@/services/friendship.service'
 import type { FriendItem, UserStub } from '@/types'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const friends = ref<UserStub[]>([])
+const router = useRouter()
+
+const onSearchQuery = (query: string) => {
+  router.push(`/friends/search?q=${query}`)
+}
 
 onMounted(async () => {
   try {
@@ -30,7 +36,7 @@ onMounted(async () => {
         </button>
       </router-link>
     </div>
-    <SearchBar />
+    <SearchBar @searchQuery="onSearchQuery" />
     <div v-if="friends.length === 0" class="p-4 text-center text-gray-500">
       You have no friends yet.
     </div>

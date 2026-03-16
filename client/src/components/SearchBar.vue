@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const props = withDefaults(defineProps<{ initialQuery?: string }>(), {
+  initialQuery: '',
+})
+
 const emit = defineEmits<{
   searchQuery: [query: string]
 }>()
 
-const searchQuery = ref<string>('')
+const searchQuery = ref<string>(props.initialQuery)
 
 const handleSubmit = () => {
   emit('searchQuery', searchQuery.value)

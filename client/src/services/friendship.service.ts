@@ -1,5 +1,11 @@
 import { apiClient } from '@/lib/axios'
-import type { FriendItem, FriendshipWithUsers, PendingRequest, SentRequest } from '@/types'
+import type {
+  FriendItem,
+  FriendshipWithUsers,
+  PendingRequest,
+  SentRequest,
+  UserStub,
+} from '@/types'
 
 export const friendshipService = {
   async getFriends(): Promise<FriendItem[]> {
@@ -37,5 +43,19 @@ export const friendshipService = {
 
   async unfriendUser(userId: string): Promise<void> {
     await apiClient.delete(`/api/friendships/${userId}`)
+  },
+
+  async sendFriendRequest(userId: string): Promise<FriendshipWithUsers> {
+    const { data } = await apiClient.post<FriendshipWithUsers>('/api/friendships/request', {
+      addresseeId: userId,
+    })
+    return data
+  },
+
+  async searchUsersForFriendRequest(query: string) {
+    const { data } = await apiClient.get<UserStub[]>('/api/users/search/friends', {
+      params: { q: query },
+    })
+    return data
   },
 }
