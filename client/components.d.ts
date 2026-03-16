@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AddFriendAction: typeof import('./src/components/AddFriendAction.vue')['default']
+    CreateParty: typeof import('./src/components/CreateParty.vue')['default']
     FriendActions: typeof import('./src/components/FriendActions.vue')['default']
     FriendListItem: typeof import('./src/components/FriendListItem.vue')['default']
     MovieCard: typeof import('./src/components/MovieCard.vue')['default']
@@ -30,6 +31,7 @@ declare module 'vue' {
     VanIcon: typeof import('vant/es')['Icon']
     VanImage: typeof import('vant/es')['Image']
     VanLoading: typeof import('vant/es')['Loading']
+    VanPopup: typeof import('vant/es')['Popup']
     VanRate: typeof import('vant/es')['Rate']
     VanTabbar: typeof import('vant/es')['Tabbar']
     VanTabbarItem: typeof import('vant/es')['TabbarItem']

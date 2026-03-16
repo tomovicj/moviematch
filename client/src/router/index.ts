@@ -52,6 +52,12 @@ const router = createRouter({
       component: () => import('@/views/FeedView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/parties',
+      name: 'parties',
+      component: () => import('@/views/PartiesView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
