@@ -37,7 +37,9 @@ onMounted(() => {
     <ViewHeaderBar label="Friends" />
     <div class="p-4">
       <router-link to="/friends/requests">
-        <button class="h-10 w-full bg-blue-500 !text-white rounded hover:bg-blue-600">
+        <button
+          class="h-10 w-full bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer"
+        >
           View Friend Requests
         </button>
       </router-link>
