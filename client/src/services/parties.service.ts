@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/axios'
-import type { Party } from '@/types'
+import type { Party, PartyMember } from '@/types'
 
 export const partiesService = {
   async getParties() {
@@ -20,5 +20,14 @@ export const partiesService = {
   async deleteParty(id: string) {
     const { data } = await apiClient.delete<Party>(`/api/parties/${id}`)
     return data
+  },
+
+  async getPartyMembers(id: string) {
+    const { data } = await apiClient.get<PartyMember[]>(`/api/parties/${id}/members`)
+    return data
+  },
+
+  async kickMember(partyId: string, memberId: string) {
+    await apiClient.post(`/api/parties/${partyId}/kick`, { userId: memberId })
   },
 }

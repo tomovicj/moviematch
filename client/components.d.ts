@@ -17,6 +17,7 @@ declare module 'vue' {
     FriendListItem: typeof import('./src/components/FriendListItem.vue')['default']
     MovieCard: typeof import('./src/components/MovieCard.vue')['default']
     MovieListItem: typeof import('./src/components/MovieListItem.vue')['default']
+    PartyMembersTab: typeof import('./src/components/PartyMembersTab.vue')['default']
     ReceivedFriendRequestActions: typeof import('./src/components/ReceivedFriendRequestActions.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

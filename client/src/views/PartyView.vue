@@ -1,0 +1,50 @@
+<script setup lang="ts">
+import ViewHeaderBar from '@/components/ViewHeaderBar.vue'
+import { partiesService } from '@/services/parties.service'
+import type { Party } from '@/types'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const partyId = route.params.id as string
+
+const party = ref<Party | null>(null)
+
+const isLoading = ref(false)
+
+const currentTab = ref<'details' | 'members'>('details')
+
+onMounted(() => {
+  // Fetch party details
+  isLoading.value = true
+  partiesService
+    .getParty(partyId)
+    .then((p) => {
+      party.value = p
+    })
+    .catch((error) => {
+      console.error('Error fetching party:', error)
+    })
+    .finally(() => {
+      isLoading.value = false
+    })
+})
+</script>
+
+<template>
+  <ViewHeaderBar label="Party" :showBackButton="true" />
+  <div class="flex">
+    <TabToggle
+      label="Details"
+      :isActive="currentTab === 'details'"
+      @click="currentTab = 'details'"
+    />
+    <TabToggle
+      label="Members"
+      :isActive="currentTab === 'members'"
+      @click="currentTab = 'members'"
+    />
+  </div>
+
+  <PartyMembersTab v-if="currentTab === 'members' && party" :partyId="party.id" />
+</template>

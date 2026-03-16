@@ -58,6 +58,18 @@ const router = createRouter({
       component: () => import('@/views/PartiesView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/parties/:id',
+      name: 'parties-party',
+      component: () => import('@/views/PartyView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/parties/:id/invite',
+      name: 'parties-party-invite',
+      component: () => import('@/views/PartyInviteView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
