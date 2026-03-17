@@ -73,7 +73,7 @@ const goToNextMovie = () => {
             @click="goToPreviousMovie"
             :disabled="currentIndex === 0"
             aria-label="Previous movie"
-            class="w-full h-10 w-full bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer"
+            class="w-full h-10 bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:active:bg-transparent"
           >
             <van-icon name="arrow-left" />
           </button>
@@ -81,7 +81,7 @@ const goToNextMovie = () => {
             @click="goToNextMovie"
             :disabled="currentIndex === matchingMovies.length - 1"
             aria-label="Next movie"
-            class="w-full h-10 w-full bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer"
+            class="w-full h-10 bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:active:bg-transparent"
           >
             <van-icon name="arrow" />
           </button>
