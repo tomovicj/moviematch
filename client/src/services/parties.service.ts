@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/axios'
-import type { MessageResponse, Party, PartyInvitation, PartyMember } from '@/types'
+import type { MessageResponse, Party, PartyInvitation, PartyMatch, PartyMember } from '@/types'
 import { friendshipService } from './friendship.service'
 
 export const partiesService = {
@@ -56,5 +56,14 @@ export const partiesService = {
     await apiClient.post<MessageResponse>(
       `/api/parties/invitations/${invitationId}/respond/decline`,
     )
+  },
+
+  async leaveParty(partyId: string) {
+    await apiClient.delete<MessageResponse>(`/api/parties/${partyId}/leave`)
+  },
+
+  async getMatchingMovies(partyId: string) {
+    const { data } = await apiClient.get<PartyMatch[]>(`/api/parties/${partyId}/matches`)
+    return data
   },
 }
