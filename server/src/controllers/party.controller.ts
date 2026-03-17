@@ -76,4 +76,10 @@ export const partyController = {
     const members = await partyService.getPartyMembers(partyId);
     res.json(members);
   },
+
+  getMatchedMovies: async (req: Request, res: Response) => {
+    const partyId = req.params.id as string;
+    const movies = await partyService.getMatches(partyId);
+    res.json(movies);
+  },
 };

@@ -64,6 +64,13 @@ router.get(
   partyController.getPartyMembers,
 );
 
+// GET /api/parties/:id/matches - Get matched movies for a party
+router.get(
+  '/:id/matches',
+  validate(idParamSchema, 'params'),
+  partyController.getMatchedMovies,
+);
+
 // POST /api/parties/:id/invite - Invite a user to the party (only host can invite)
 router.post(
   '/:id/invite',
