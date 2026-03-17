@@ -1,5 +1,6 @@
 import { apiClient } from '@/lib/axios'
-import type { Party, PartyMember } from '@/types'
+import type { MessageResponse, Party, PartyMember } from '@/types'
+import { friendshipService } from './friendship.service'
 
 export const partiesService = {
   async getParties() {
@@ -29,5 +30,16 @@ export const partiesService = {
 
   async kickMember(partyId: string, memberId: string) {
     await apiClient.post(`/api/parties/${partyId}/kick`, { userId: memberId })
+  },
+
+  async getAvailableFriends(partyId: string) {
+    const friendships = await friendshipService.getFriends()
+    const partyMembers = await this.getPartyMembers(partyId)
+    const partyMemberIds = new Set(partyMembers.map((member) => member.id))
+    return friendships.filter((friendship) => !partyMemberIds.has(friendship.friend.id))
+  },
+
+  async inviteFriend(partyId: string, friendId: string) {
+    await apiClient.post<MessageResponse>(`/api/parties/${partyId}/invite`, { userId: friendId })
   },
 }
