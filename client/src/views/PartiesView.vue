@@ -25,8 +25,15 @@ onMounted(() => {
 
 <template>
   <ViewHeaderBar label="Parties" />
-  <div class="p-4">
-    <CreateParty />
+  <div class="flex items-center gap-4 p-4">
+    <router-link to="/parties/invites" class="w-full">
+      <button
+        class="h-10 w-full bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer"
+      >
+        View Invites
+      </button>
+    </router-link>
+    <CreateParty class="w-full" />
   </div>
 
   <!-- Loading Spinner -->

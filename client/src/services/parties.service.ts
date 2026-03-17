@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/axios'
-import type { MessageResponse, Party, PartyMember } from '@/types'
+import type { MessageResponse, Party, PartyInvitation, PartyMember } from '@/types'
 import { friendshipService } from './friendship.service'
 
 export const partiesService = {
@@ -41,5 +41,20 @@ export const partiesService = {
 
   async inviteFriend(partyId: string, friendId: string) {
     await apiClient.post<MessageResponse>(`/api/parties/${partyId}/invite`, { userId: friendId })
+  },
+
+  async getInvitations() {
+    const { data } = await apiClient.get<PartyInvitation[]>(`/api/parties/invitations`)
+    return data
+  },
+
+  async acceptInvitation(invitationId: string) {
+    await apiClient.post<MessageResponse>(`/api/parties/invitations/${invitationId}/respond/accept`)
+  },
+
+  async declineInvitation(invitationId: string) {
+    await apiClient.post<MessageResponse>(
+      `/api/parties/invitations/${invitationId}/respond/decline`,
+    )
   },
 }
