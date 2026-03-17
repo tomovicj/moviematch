@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const matchingMovies = ref<Movie[]>([])
 const currentIndex = ref(0)
+const loadedMovies = ref(false)
 const isPending = ref(false)
 
 const handleFindMatchingMovies = () => {
@@ -17,6 +18,7 @@ const handleFindMatchingMovies = () => {
     .getMatchingMovies(props.party.id)
     .then((movies) => {
       matchingMovies.value = movies
+      loadedMovies.value = true
     })
     .catch((error) => {
       console.error('Error fetching matching movies:', error)
@@ -24,6 +26,18 @@ const handleFindMatchingMovies = () => {
     .finally(() => {
       isPending.value = false
     })
+}
+
+const goToPreviousMovie = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value -= 1
+  }
+}
+
+const goToNextMovie = () => {
+  if (currentIndex.value < matchingMovies.value.length - 1) {
+    currentIndex.value += 1
+  }
 }
 </script>
 
@@ -34,7 +48,9 @@ const handleFindMatchingMovies = () => {
       <MovieCard :movie="matchingMovies[currentIndex]" />
     </div>
     <div class="shrink-0 p-4">
+      <!-- Find Matching Movies Button -->
       <button
+        v-if="!loadedMovies"
         class="h-10 w-full bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer"
         @click="handleFindMatchingMovies"
         :disabled="isPending"
@@ -42,6 +58,26 @@ const handleFindMatchingMovies = () => {
         <van-loading v-if="isPending" type="spinner" size="24px" vertical>Loading...</van-loading>
         <span v-else>Find Matching Movies</span>
       </button>
+
+      <!-- Change Movie Buttons -->
+      <div v-else class="flex gap-4">
+        <button
+          @click="goToPreviousMovie"
+          :disabled="currentIndex === 0"
+          aria-label="Previous movie"
+          class="w-full h-10 w-full bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer"
+        >
+          <van-icon name="arrow-left" />
+        </button>
+        <button
+          @click="goToNextMovie"
+          :disabled="currentIndex === matchingMovies.length - 1"
+          aria-label="Next movie"
+          class="w-full h-10 w-full bg-transparent border border-blue-500 !text-blue-500 font-medium rounded hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer"
+        >
+          <van-icon name="arrow" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
