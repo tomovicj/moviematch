@@ -151,6 +151,24 @@ export const partyService = {
   getUserInvitations: async (userId: string) => {
     const invitations = await prisma.partyInvitation.findMany({
       where: { inviteeId: userId },
+      include: {
+        party: {
+          select: {
+            id: true,
+            name: true,
+            hostId: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        invitee: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
     });
 
     return invitations;

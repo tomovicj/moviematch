@@ -1,4 +1,5 @@
 import type { Movie } from './movie';
+import type { UserStub } from './user'
 
 /** Mirrors the server-side Prisma PartyInvitationStatus enum. */
 export type PartyInvitationStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
@@ -16,13 +17,12 @@ export interface Party {
 }
 
 /**
- * Party invitation record returned from GET /api/parties/invitations
- * and POST /api/parties/invitations/:id/respond/*.
+ * Party invitation record returned from GET /api/parties/invitations.
  */
 export interface PartyInvitation {
   id: string;
-  partyId: string;
-  inviteeId: string;
+  party: Party
+  invitee: UserStub;
   status: PartyInvitationStatus;
   createdAt: string;
   updatedAt: string;
@@ -45,3 +45,4 @@ export interface PartyMember {
  * Shape matches the full Movie record.
  */
 export type PartyMatch = Movie;
+
