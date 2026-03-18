@@ -15,6 +15,7 @@ const socialProviders =
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: 'postgresql' }),
+  trustedOrigins: [env.BETTER_AUTH_URL, 'http://localhost:5173'],
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
   emailAndPassword: {

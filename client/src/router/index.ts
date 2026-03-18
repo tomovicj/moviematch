@@ -82,11 +82,11 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const { isAuthenticated } = useAuth()
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta.requiresAuth && !isAuthenticated.value) {
     return { name: 'login' }
   }
 
-  if (to.meta.requiresGuest && isAuthenticated) {
+  if (to.meta.requiresGuest && isAuthenticated.value) {
     return { name: 'feed' }
   }
 })
