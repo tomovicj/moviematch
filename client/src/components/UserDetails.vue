@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { useAuth } from '@/composables/useAuth'
 import type { UserProfile } from '@/types'
+import { useRouter } from 'vue-router'
 
 defineProps<{
   user: UserProfile
 }>()
 
 const auth = useAuth()
+const router = useRouter()
 
 const handleLogout = () => {
   auth.logout()
+  router.replace('/login')
 }
 </script>
 
