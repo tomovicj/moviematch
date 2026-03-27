@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import path from 'node:path';
+import { existsSync } from 'node:fs';
 import { toNodeHandler } from 'better-auth/node';
 import { auth } from './lib/auth';
 import { env } from './lib/env';
@@ -29,16 +31,41 @@ app.all('/api/auth/{*any}', toNodeHandler(auth));
 
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, TypeScript Express!');
-});
-
 app.use('/api/friendships', friendshipRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/blocks', blockRoutes);
 app.use('/api/movies', moviesRoutes);
 app.use('/api/swipes', swipesRoutes);
 app.use('/api/parties', partyRoutes);
+
+const publicDir = path.join(__dirname, 'public');
+const indexFilePath = path.join(publicDir, 'index.html');
+
+if (existsSync(indexFilePath)) {
+  app.use(express.static(publicDir));
+
+  app.get('/{*path}', (req: Request, res: Response, next) => {
+    if (req.path.startsWith('/api/')) {
+      res.status(404).json({
+        error: {
+          message: 'Route not found',
+          status: 404,
+        },
+      });
+      return;
+    }
+
+    res.sendFile(indexFilePath, (error) => {
+      if (error) {
+        next(error);
+      }
+    });
+  });
+} else {
+  app.get('/', (req: Request, res: Response) => {
+    res.send('Hello, TypeScript Express!');
+  });
+}
 
 app.use(errorHandler);
 

@@ -1,0 +1,42 @@
+services:
+  app:
+    image: ${APP_IMAGE:-ghcr.io/tomovicj/moviematch:latest}
+    container_name: moviematch_app
+    restart: always
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?schema=public
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - default
+      - proxy
+
+  db:
+    image: postgres:15-alpine
+    container_name: moviematch_postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  proxy:
+    external: true

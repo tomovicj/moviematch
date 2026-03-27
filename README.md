@@ -105,8 +105,56 @@ _Movie that matches all party members' preferences_
 ### Infrastructure
 
 - **Docker & Docker Compose** - Containerization
+- **GitHub Actions** - CI/CD image build and deploy pipeline
 - **pnpm** - Fast package manager
 - **Nodemon** - Development server auto-reload
+
+## CI/CD Deployment (GHCR + VPS)
+
+This repository includes a production deployment workflow in `.github/workflows/deploy.yml`.
+
+On every push to `main`, GitHub Actions will:
+
+1. **Build** a production Docker image (frontend + backend in one image)
+2. **Push** the image to GitHub Container Registry (GHCR)
+3. **Deploy** by SSHing into your VPS, pulling the new image, running `prisma migrate deploy`, and restarting the app
+
+### Required GitHub Actions Secrets
+
+| Secret            | Description                                                                       |
+| ----------------- | --------------------------------------------------------------------------------- |
+| `VPS_HOST`        | VPS hostname or IP                                                                |
+| `VPS_USER`        | SSH user used for deployment                                                      |
+| `VPS_SSH_KEY`     | Private SSH key for that user                                                     |
+| `VPS_KNOWN_HOSTS` | `known_hosts` entry for the VPS (run `ssh-keyscan -p <port> <host>` to obtain it) |
+| `VPS_APP_PATH`    | Absolute path on VPS containing `docker-compose.prod.yml`                         |
+| `VPS_PORT`        | SSH port (optional, defaults to `22`)                                             |
+
+### GitHub Environment Setup
+
+The deploy job uses the `production` environment. Create it in your repository settings under **Settings → Environments → New environment**:
+
+1. Name it `production`
+2. Optionally enable **Required reviewers** if you want manual approval before deploys
+
+### VPS Setup
+
+1. Copy `docker-compose.prod.yml` to your VPS project directory
+2. Create `.env` on the VPS using `.env.example` as a reference
+3. Log in to GHCR so the VPS can pull images:
+
+```bash
+echo "<GITHUB_PAT>" | docker login ghcr.io -u <GITHUB_USERNAME> --password-stdin
+```
+
+4. Start services once:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d db
+docker compose -f docker-compose.prod.yml up -d app
+```
+
+After that, each push to `main` triggers automated deployment.
 
 ## Getting Started
 
@@ -135,11 +183,13 @@ _Movie that matches all party members' preferences_
 3. **Set up environment variables**
 
    Rename the `.env.example` files to `.env` in both `server` and `client` directories:
-    ```bash
-    mv server/.env.example server/.env
-    mv client/.env.example client/.env
-    ```
-    Then fill in the values
+
+   ```bash
+   mv server/.env.example server/.env
+   mv client/.env.example client/.env
+   ```
+
+   Then fill in the values
 
 ### Database Setup
 
@@ -179,19 +229,15 @@ _Movie that matches all party members' preferences_
 
 ### Running the Development Servers
 
-**Option 1: Using Docker Compose** (Recommended)
+**Option 1: Start PostgreSQL with Docker Compose** (Recommended)
 
 ```bash
-docker-compose up
+docker compose up -d db
 ```
 
-This will start:
+This will start only PostgreSQL on port `5432`.
 
-- PostgreSQL database on port 5432
-- Backend API on port 3000
-- Frontend on port 5173
-
-**Option 2: Manual Setup**
+Then run backend and frontend locally:
 
 Terminal 1 - Start the backend:
 
@@ -245,8 +291,10 @@ moviematch/
 │   ├── package.json
 │   └── tsconfig.json
 │
-├── docker-compose.yml     # Docker services configuration
-├── .env.example          # Environment variables template
+├── Dockerfile            # Production multi-stage image build
+├── docker-compose.yml    # Local Docker services (database)
+├── docker-compose.prod.yml # Production app + database services
+├── .env.example          # Production environment template
 └── README.md             # This file
 ```
 

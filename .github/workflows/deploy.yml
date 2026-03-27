@@ -1,0 +1,118 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      image-ref: ${{ steps.image.outputs.name }}:sha-${{ github.sha }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare image name
+        id: image
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/moviematch" >> "$GITHUB_OUTPUT"
+
+      - name: Extract image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=long,prefix=sha-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy on VPS
+        env:
+          IMAGE_REF: ${{ needs.build.outputs.image-ref }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+          VPS_APP_PATH: ${{ secrets.VPS_APP_PATH }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -eu
+
+          test -n "$VPS_HOST"
+          test -n "$VPS_USER"
+          test -n "$VPS_APP_PATH"
+          test -n "$VPS_SSH_KEY"
+
+          if [ -z "${VPS_KNOWN_HOSTS:-}" ]; then
+            echo "::error::VPS_KNOWN_HOSTS secret is required"
+            exit 1
+          fi
+
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+
+          printf '%s\n' "$VPS_SSH_KEY" > "$HOME/.ssh/id_deploy"
+          chmod 600 "$HOME/.ssh/id_deploy"
+
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+
+          ssh -i "$HOME/.ssh/id_deploy" -p "${VPS_PORT:-22}" "$VPS_USER@$VPS_HOST" \
+            "VPS_APP_PATH='$VPS_APP_PATH' IMAGE_REF='$IMAGE_REF' bash -s" <<'EOF'
+          set -eu
+          cd "$VPS_APP_PATH"
+
+          export APP_IMAGE="$IMAGE_REF"
+
+          docker compose -f docker-compose.prod.yml pull app
+          docker compose -f docker-compose.prod.yml up -d db
+
+          TRIES=0
+          until [ "$(docker compose -f docker-compose.prod.yml ps db --format '{{.Health}}')" = "healthy" ]; do
+            TRIES=$((TRIES + 1))
+            if [ "$TRIES" -ge 30 ]; then
+              echo "Database failed to become healthy after 60s"
+              exit 1
+            fi
+            sleep 2
+          done
+
+          docker compose -f docker-compose.prod.yml run --rm app node_modules/.bin/prisma migrate deploy
+          docker compose -f docker-compose.prod.yml up -d app
+
+          docker image prune -f
+          EOF
