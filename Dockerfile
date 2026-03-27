@@ -21,6 +21,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN pnpm --filter server exec prisma generate
+
 # 1. Build projects
 RUN pnpm --filter client build && pnpm --filter server build
 
